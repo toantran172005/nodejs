@@ -9,9 +9,11 @@ const app = express();
 // change data to json
 app.use(express.json());
 // connect to mongodb
+//mongoose.connect("mongodb://localhost:27017/n7_fashion");
+// mongoose.connect("mongodb+srv://toantran172005:T111375t@cluster0.n0uir.mongodb.net/n7_fashion?retryWrites=true&w=majority");
 mongoose
   .connect(
-    "mongodb+srv://toantran172005:sduKFuCoCj9W7nC1@toni.zjkmz.mongodb.net/Node_Mongo?retryWrites=true&w=majority&appName=Toni"
+    "mongodb+srv://toantran172005:T111375t@cluster0.n0uir.mongodb.net/n7_fashion?retryWrites=true&w=majority",
   )
   .then(() => {
     console.log("Connect successfully!");

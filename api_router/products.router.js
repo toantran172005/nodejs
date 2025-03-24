@@ -65,5 +65,38 @@ router.delete("/deleteProductById/:id", async (req, res) => {
   }
 });
 
+// API search product by type and sort by price
+router.get("/searchProductByType", async (req, res) => {
+  try {
+    const pipeline = [];
+    if (req.query.type) {
+      pipeline.push({ $match: { "information.type": req.query.type } });
+    }
+    if (req.query.price) {
+      pipeline.push({ $sort: { price: req.query.price === "desc" ? -1 : 1 } });
+    }
+    const products = await Product.aggregate(pipeline);
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+// API search product by size
+router.get("/searchProductBySize", async (req, res) => {
+  try {
+    const pipeline = [];
+    if (req.query.size) {
+      const size = Array.isArray(req.query.size)
+        ? req.query.size
+        : [req.query.size];
+      pipeline.push({ $match: { "information.size": { $in: size } } });
+    }
+    const products = await Product.aggregate(pipeline);
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // export router
 module.exports = router;
