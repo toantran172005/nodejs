@@ -2,7 +2,11 @@ const mongoose = require("mongoose");
 
 const ProductSchema = mongoose.Schema(
   {
-    name: {
+    productId: {
+      type: String,
+      required: [true, "Enter the product id!"],
+    },
+    productName: {
       type: String,
       required: [true, "Enter the name of the product!"],
     },
@@ -11,16 +15,35 @@ const ProductSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
-
+    information: {
+     color: {
+      type: String,
+      required: false
+    },
+    size: [
+      {
+        type: String,
+        required: false
+      } 
+    ],
+    type: {
+      type: String,
+      required: true
+    }
+  },
     price: {
       type: Number,
       required: true,
       default: 0,
     },
-
     image: {
       type: String,
       required: false,
+    },
+    rating: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   {
@@ -29,6 +52,4 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
-const Product = mongoose.model("Product", ProductSchema);
-
-module.exports = Product;
+module.exports = mongoose.model("Product", ProductSchema);
