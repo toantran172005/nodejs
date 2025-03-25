@@ -8,7 +8,7 @@ const CustomerScheme = mongoose.Schema(
         },
         customerName : {
             type: String,
-            required: [true, "Enter the customer name!"],
+            required: [false, "Enter the customer name!"],
         },
         customerUserName: {
             type: String,
@@ -20,7 +20,7 @@ const CustomerScheme = mongoose.Schema(
         },
         email : {
             type: String,
-            required: false
+            required: true
         },
         phoneNumber : {
             type: String,

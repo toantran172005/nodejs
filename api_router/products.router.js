@@ -1,6 +1,5 @@
 const express = require("express");
 const Product = require("../models/product.model");
-
 const router = express.Router();
 
 // API create product
@@ -65,7 +64,7 @@ router.delete("/deleteProductById/:id", async (req, res) => {
   }
 });
 
-// API search product by type and sort by price
+// API search product by type, size, range price
 router.get("/searchProductByType", async (req, res) => {
   try {
     const pipeline = [];
@@ -98,5 +97,5 @@ router.get("/searchProductBySize", async (req, res) => {
   }
 });
 
-// export router
+
 module.exports = router;
