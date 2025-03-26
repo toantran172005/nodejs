@@ -1,11 +1,8 @@
-// declare express and mongoose
 const express = require("express");
 const mongoose = require("mongoose");
-// import product model and router
-const Product = require("./models/product.model");
+// import router
 const ProductRouter = require("./api_router/products.router");
-const User = require("./models/customer.model");
-const UserRouter = require("./api_router/customer.router");
+const CustomerRouter = require("./api_router/customer.router");
 // create express app
 const app = express();
 // change data to json
@@ -26,7 +23,7 @@ mongoose
 
 // use the router
 app.use("/", ProductRouter);
-app.use("/", UserRouter);
+app.use("/", CustomerRouter);
 
 // listen the server to run on port 3000
 app.listen(3000, () => {

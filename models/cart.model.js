@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Product = require("./product.model");
 
 const CartSchema = mongoose.Schema(
   {
@@ -6,37 +7,17 @@ const CartSchema = mongoose.Schema(
       type: String,
       required: [true, "Enter the cart id!"],
     },
-    items: [{ 
-        productId: {
-            type: String,
-            required: [true, "Enter the product id!"],
-        },
-        productName: {
-            type: String,
-            required: [true, "Enter the name of the product!"],
-        },
-        quantity: {
-            type: Number,
-            required: [true, "Enter the quantity!"],
-        },
-        price: {
-            type: Number,
-            required: [true, "Enter the price!"],
-        },
-        color: {
-            type: String,
-            required: false
-        },
-        size: {
-            type: String,
-            required: false
-        }
-    }],
+    items: [Product.schema],
   },
   {
     timestamps: true,
     collection: "carts",
   }
 );
+CartSchema.methods.getTotal = () => {
+  return this.items.length > 0
+    ? this.items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
+    : 0;
+};
 
 module.exports = mongoose.model("Cart", CartSchema);

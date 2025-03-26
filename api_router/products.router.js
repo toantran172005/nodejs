@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/product", async (req, res) => {
   try {
     const product = await Product.create(req.body);
+
     res.status(201).json({ product });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -16,6 +17,7 @@ router.post("/product", async (req, res) => {
 router.get("/viewAllProducts", async (req, res) => {
   try {
     const products = await Product.find({});
+
     res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -26,9 +28,11 @@ router.get("/viewAllProducts", async (req, res) => {
 router.get("/getProductById/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
+
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     res.status(200).json({ product });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -42,9 +46,11 @@ router.put("/updateProductById/:id", async (req, res) => {
       req.body,
       { new: true }
     );
+
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     res.status(200).json({ updatedProduct });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -55,9 +61,11 @@ router.put("/updateProductById/:id", async (req, res) => {
 router.delete("/deleteProductById/:id", async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
+
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -65,37 +73,36 @@ router.delete("/deleteProductById/:id", async (req, res) => {
 });
 
 // API search product by type, size, range price
-router.get("/searchProductByType", async (req, res) => {
+router.get("/searchProduct", async (req, res) => {
   try {
     const pipeline = [];
+    // Type of product
     if (req.query.type) {
-      pipeline.push({ $match: { "information.type": req.query.type } });
+      pipeline.push({ $match: { "information.type": {$regex: req.query.type, $options: "i" } }});
     }
-    if (req.query.price) {
-      pipeline.push({ $sort: { price: req.query.price === "desc" ? -1 : 1 } });
-    }
-    const products = await Product.aggregate(pipeline);
-    res.status(200).json({ products });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-// API search product by size
-router.get("/searchProductBySize", async (req, res) => {
-  try {
-    const pipeline = [];
+    // Size of product (Array)
     if (req.query.size) {
       const size = Array.isArray(req.query.size)
         ? req.query.size
         : [req.query.size];
       pipeline.push({ $match: { "information.size": { $in: size } } });
     }
+    // Price range of product
+    if (req.query.minPrice || req.query.maxPrice) {
+      const minPrice = req.query.minPrice ? parseInt(req.query.minPrice) : 0;
+            const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice) : Infinity;
+      pipeline.push({
+        $match: { price: { $gte: minPrice, $lte: maxPrice } },
+      });
+    }
+    // Sort by price ascending
+    pipeline.push({$sort: {price: 1}});
+
     const products = await Product.aggregate(pipeline);
     res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
 
 module.exports = router;
