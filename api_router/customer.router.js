@@ -7,11 +7,12 @@ const router = express.Router();
 // API create a new customer
 router.post("/customerSignUp", async (req, res) => {
   try {
+    // Username có ít nhất 5 kí tự, không chấp nhận kí tự đặc biệt
     const regexUserName = /^[a-zA-Z0-9]{5,}$/;
-
+    // Có ít nhất 6 kí tự gồm chữ IN HOA, thường, số và kí tự đặc biệt
     const regexPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{6,}$/;
-
+    // email không được có kí tự đặc biệt ở đầu
     const regexEmail = /^(?!_|\.)[\w.+%-]+@[a-zA-Z0-9.-]{2,}(\.[a-z]{2,})+$/;
 
     if (!regexUserName.test(req.body.customerUserName)) {
@@ -79,7 +80,7 @@ router.put("/customerUpdate/:id", async (req, res) => {
       email,
       phoneNumber,
       address,
-    } = req.query;
+    } = req.body;
 
     const customer = await Customer.findById(id, { new: true });
 
@@ -119,15 +120,22 @@ router.post("/customerAddProduct/:idCustomer", async (req, res) => {
   try {
     const { idCustomer } = req.params;
     // Lấy data từ body
-    const { productId, productName, quantity, information, price, rating } =
-      req.body;
+    const {
+      _id,
+      productId,
+      productName,
+      quantity,
+      information,
+      price,
+      rating,
+    } = req.body;
 
     const cart = await Cart.findOne({ customerId: idCustomer });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(_id);
     // Kiểm tra số lượng sản phẩm
     if (product.quantity < parseInt(quantity)) {
       return res.status(400).json({ message: "Product out of stock" });
@@ -136,8 +144,8 @@ router.post("/customerAddProduct/:idCustomer", async (req, res) => {
     const existingProduct = cart.items.find(
       (item) =>
         item.productId.toString() === productId &&
-        item.information.size.includes(parsedInfo.size[0]) &&
-        item.information.color === parsedInfo.color
+        item.information.size.includes(information.size[0]) &&
+        item.information.color === information.color
     );
 
     if (existingProduct) {
@@ -147,7 +155,7 @@ router.post("/customerAddProduct/:idCustomer", async (req, res) => {
         productId,
         productName,
         quantity: parseInt(quantity),
-        information: parsedInfo,
+        information: information,
         price: parseInt(price),
         rating: parseInt(rating),
       });
