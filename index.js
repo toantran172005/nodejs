@@ -4,6 +4,7 @@ const cors = require("cors");
 // import router
 const ProductRouter = require("./api_router/products.router");
 const CustomerRouter = require("./api_router/customer.router");
+const CartRouter = require("./api_router/cart.router")
 // create express app
 const app = express();
 // change data to json
@@ -26,7 +27,7 @@ mongoose
 // use the router
 app.use("/", ProductRouter);
 app.use("/", CustomerRouter);
-
+app.use("/", CartRouter);
 // listen the server to run on port 3000
 app.listen(3000, () => {
   console.log("Server is running at port 3000");

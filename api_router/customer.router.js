@@ -2,6 +2,7 @@ const express = require("express");
 const Customer = require("../models/customer.model");
 const Cart = require("../models/cart.model");
 const Product = require("../models/product.model");
+const mongoose = require("mongoose");
 const router = express.Router();
 
 // API create a new customer
@@ -125,7 +126,6 @@ router.post("/customerAddProduct/:idCustomer", async (req, res) => {
     const { idCustomer } = req.params;
     // Lấy data từ body
     const {
-      _id,
       productId,
       productName,
       quantity,
@@ -134,36 +134,45 @@ router.post("/customerAddProduct/:idCustomer", async (req, res) => {
       rating,
     } = req.body;
 
+
     const cart = await Cart.findOne({ customerId: idCustomer });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    const product = await Product.findById(_id);
+    const product = await Product.findById(productId);
     // Kiểm tra số lượng sản phẩm
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
     if (product.quantity < parseInt(quantity)) {
       return res.status(400).json({ message: "Product out of stock" });
     }
-    // Kiểm tra giỏ hàng có sản phẩm đó chưa, trả về product trong mảng items
+
+    // Kiểm tra giỏ hàng có sản phẩm đó chưa, trả về item trong mảng items
+
     const existingProduct = cart.items.find(
       (item) =>
-        item.productId.toString() === productId &&
+        item.productId == productId &&
         item.information.size.includes(information.size[0]) &&
         item.information.color === information.color
     );
-
+    
     if (existingProduct) {
       existingProduct.quantity += parseInt(quantity);
     } else {
+      console.log(productId);
       cart.items.push({
-        productId,
-        productName,
-        quantity: parseInt(quantity),
+        productId: productId,
+        productName: productName,
+        quantity: Number(quantity),
         information: information,
-        price: parseInt(price),
-        rating: parseInt(rating),
+        price: Number(price),
+        rating: Number(rating),
       });
     }
+
     // Cập nhật số lượng sản phẩm trong kho
     product.quantity -= parseInt(quantity);
 

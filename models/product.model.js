@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const ProductSchema = mongoose.Schema(
   {
-    productId: {
-      type: String,
-      required: [true, "Enter the product id!"],
-    },
     productName: {
       type: String,
       required: [true, "Enter the name of the product!"],
@@ -29,6 +25,10 @@ const ProductSchema = mongoose.Schema(
     type: {
       type: String,
       required: false
+    },
+    img: {
+      type: String,
+      require: false
     }
   },
     price: {
@@ -41,6 +41,7 @@ const ProductSchema = mongoose.Schema(
       required: false,
       default: 0,
     },
+    
   },
   {
     timestamps: true,
