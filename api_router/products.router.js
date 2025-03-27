@@ -3,7 +3,7 @@ const Product = require("../models/product.model");
 const router = express.Router();
 
 // API create product
-router.post("/product", async (req, res) => {
+router.post("/addProduct", async (req, res) => {
   try {
     const product = await Product.create(req.body);
 
@@ -14,7 +14,7 @@ router.post("/product", async (req, res) => {
 });
 
 // API show all products
-router.get("/viewAllProducts", async (req, res) => {
+router.get("/showAllProduct", async (req, res) => {
   try {
     const products = await Product.find({});
 

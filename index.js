@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 // import router
 const ProductRouter = require("./api_router/products.router");
 const CustomerRouter = require("./api_router/customer.router");
@@ -7,6 +8,7 @@ const CustomerRouter = require("./api_router/customer.router");
 const app = express();
 // change data to json
 app.use(express.json());
+app.use(cors());
 // connect to mongodb
 //mongoose.connect("mongodb://localhost:27017/n7_fashion");
 // mongoose.connect("mongodb+srv://toantran172005:T111375t@cluster0.n0uir.mongodb.net/n7_fashion?retryWrites=true&w=majority");
