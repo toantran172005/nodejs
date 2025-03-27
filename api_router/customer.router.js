@@ -45,7 +45,7 @@ router.post("/customerSignUp", async (req, res) => {
 });
 
 // API login of customer
-router.get("/customerSignIn", async (req, res) => {
+router.post("/customerSignIn", async (req, res) => {
   try {
     const { emailSignIn, customerPassword } = req.body;
 
