@@ -32,6 +32,10 @@ router.post("/customerSignUp", async (req, res) => {
       return res.status(500).json({ message: "Invalid email!" });
     }
 
+    const customerEmail = await Customer.findOne({email: req.body.email});
+    if(customerEmail) 
+      res.status(500).json({message: "Email is exist!"});
+
     const customer = await Customer.create(req.body);
 
     const idCustomer = customer._id.toString();
