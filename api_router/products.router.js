@@ -13,16 +13,6 @@ router.post("/addProduct", async (req, res) => {
   }
 });
 
-// API show all products
-router.get("/showAllProduct", async (req, res) => {
-  try {
-    const products = await Product.find();
-
-    res.status(200).json({ products });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 // API update product by id
 router.put("/updateProductById/:id", async (req, res) => {
