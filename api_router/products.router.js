@@ -24,20 +24,6 @@ router.get("/showAllProduct", async (req, res) => {
   }
 });
 
-// API get product by id
-router.get("/getProductById/:id", async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json({ product });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 // API update product by id
 router.put("/updateProductById/:id", async (req, res) => {
   try {
@@ -72,20 +58,13 @@ router.delete("/deleteProductById/:id", async (req, res) => {
   }
 });
 
-// API search product by type, size, range price
+// API search product by type, range price
 router.get("/searchProduct", async (req, res) => {
   try {
     const pipeline = [];
     // Type of product
     if (req.query.type) {
       pipeline.push({ $match: { "information.type": {$regex: req.query.type, $options: "i" } }});
-    }
-    // Size of product (Array)
-    if (req.query.size) {
-      const size = Array.isArray(req.query.size)
-        ? req.query.size
-        : [req.query.size];
-      pipeline.push({ $match: { "information.size": { $in: size } } });
     }
     // Price range of product
     if (req.query.minPrice || req.query.maxPrice) {
